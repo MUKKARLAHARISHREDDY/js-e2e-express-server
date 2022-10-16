@@ -1,0 +1,24 @@
+
+pipeline {
+    agent { label 'NODE-JS' }
+    stages {
+        stage('vcs') {
+            steps {
+                git url: 'https://github.com/MUKKARLAHARISHREDDY/js-e2e-express-server.git',
+                branch:'main'
+            }
+        }
+        stage('build') {
+            steps {
+                sh  """export $PATH=/var/lib/jenkins/.nvm/versions/node/v16.18.0/bin:$PATH"
+                npm install
+                npm run build"""
+            }
+        }
+        stage('archive results') {
+            steps {
+                junit 'target/surefire-reports/**/*.xml'
+            }
+        }
+    }
+} 
